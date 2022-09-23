@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:random_pick/features/random/presentation/pages/random_page.dart';
-import 'package:random_pick/injection_container.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
   runApp(const MyApp());
 }
 
@@ -18,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sorteio de Restaurante',
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.purple,

@@ -10,7 +10,6 @@
 # include: package:flutter_lints/flutter.yaml
 
 # very good analysis
-include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
   exclude:

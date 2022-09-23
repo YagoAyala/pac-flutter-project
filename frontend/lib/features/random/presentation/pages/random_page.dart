@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:random_pick/core/navigation/random_pick_navigation.dart';
-import 'package:random_pick/features/random/presentation/cubit/random_page_cubit.dart';
-import 'package:random_pick/features/random/random_history/presentation/pages/random_history_page.dart';
-import 'package:random_pick/features/random/random_list/presentation/pages/random_list_page.dart';
 import 'package:random_pick/features/random/random_number/presentation/pages/random_number_page.dart';
-import 'package:random_pick/injection_container.dart';
 
 /// the main dashboard which contains two tabs
 class RandomPage extends StatelessWidget {
@@ -16,10 +12,7 @@ class RandomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<RandomPageCubit>(),
-      child: const RandomPageView(),
-    );
+    return RandomPageView();
   }
 }
 
@@ -30,23 +23,12 @@ class RandomPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTab =
-        context.select((RandomPageCubit cubit) => cubit.state.tab);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sorteio de Restaurante'),
         actions: [
           IconButton(
-            onPressed: () async {
-              await PackageInfo.fromPlatform().then(
-                (packageInfo) => Navigator.of(context).push(
-                  MaterialPageRoute<Widget>(
-                    builder: (context) => const RandomHistoryPage(),
-                  ),
-                ),
-              );
-            },
+            onPressed: () async {},
             icon: const Icon(Icons.history),
           ),
           IconButton(
@@ -68,50 +50,17 @@ class RandomPageView extends StatelessWidget {
           ),
         ],
       ),
-      body: WillPopScope(
-        onWillPop: () async => !await Navigator.maybePop(
-          getIt<RandomPickNavigation>()
-              .navigatorKeys[selectedTab.index]!
-              .currentState!
-              .context,
-        ),
-        child: IndexedStack(
-          index: selectedTab.index,
-          children: [
-            // first tab to display the random number pick
-            Navigator(
-              // add navigation key for nested navigation
-              key: getIt<RandomPickNavigation>().navigatorKeys[0],
-              onGenerateRoute: (_) => MaterialPageRoute<Widget>(
-                builder: (_) => const RandomNumberPage(),
-              ),
+      body: IndexedStack(
+        index: 0,
+        children: [
+          // first tab to display the random number pick
+          Navigator(
+            // add navigation key for nested navigation
+            onGenerateRoute: (_) => MaterialPageRoute<Widget>(
+              builder: (_) => RandomNumberPage(),
             ),
-            // second tab to display the random list pick
-            Navigator(
-              // add navigation key for nested navigation
-              key: getIt<RandomPickNavigation>().navigatorKeys[1],
-              onGenerateRoute: (_) => MaterialPageRoute<Widget>(
-                builder: (_) => const RandomListPage(),
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedTab.index,
-        onDestinationSelected: (index) =>
-            context.read<RandomPageCubit>().setTab(RandomPageTab.values[index]),
-        destinations: const [
-          NavigationDestination(
-            selectedIcon: Icon(CupertinoIcons.number_square_fill),
-            icon: Icon(CupertinoIcons.number_square),
-            label: 'Restaurantes',
           ),
-          NavigationDestination(
-            selectedIcon: Icon(CupertinoIcons.square_list_fill),
-            icon: Icon(CupertinoIcons.square_list),
-            label: 'Lista',
-          ),
+          // second tab to display the random list pick
         ],
       ),
     );
