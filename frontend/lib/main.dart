@@ -1,36 +1,70 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:random_pick/features/random/presentation/pages/random_page.dart';
-import 'package:random_pick/injection_container.dart' as di;
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
-  runApp(const MyApp());
+void main() {
+  runApp(MyApp());
 }
 
-/// main application widget
-class MyApp extends StatelessWidget {
-  /// create the main application
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-  // This widget is the root of the application.
+class _MyAppState extends State<MyApp> {
+  List<String> restaurants = [
+    'Mcdonald\'s',
+    'Subway',
+    'Pizza Hut',
+    'Barbaque Nation',
+    'Milan Fastfood'
+  ];
+
+  int currIndex;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sorteio de Restaurante',
-      // debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.purple,
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.purple,
-        brightness: Brightness.dark,
-      ),
-      // TODO(immadisairaj): add theme change option
-      themeMode: ThemeMode.light,
-      home: const RandomPage(),
+      home: Scaffold(
+        appBar: AppBar(title: Text("Restaurant Picker")),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('What do you want to eat?'),
+              if(currIndex != null) 
+                Text(
+                  restaurants[currIndex], 
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center
+                ),
+              SizedBox(height: 40),
+              TextButton(
+                onPressed: (){
+                  updateIndex();
+                }, 
+                child: Text("Pick Random Restaurant"),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.teal,
+                  onSurface: Colors.grey,
+                )
+              )
+            ],
+          )
+        )  
+      )
     );
+  }
+  
+  void updateIndex() {
+    //final random = Random();
+    int min = 0;
+    int max = restaurants.length;
+    Random rnd = new Random();
+    int r = min + rnd.nextInt(max - min);
+    //final index = random.nextInt(restaurants.length);
+    setState(() {
+      currIndex = r;
+    });
   }
 }
